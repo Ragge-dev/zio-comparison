@@ -1,7 +1,7 @@
 package com.kognic.comparison.vanilla
 
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.vanilla.storage.{FileStorage, FileStorageImpl}
+import com.kognic.comparison.vanilla.filestorage.{FileStorage, FileStorageImpl}
 import com.kognic.comparison.{DomainError, User}
 
 import scala.concurrent.{ExecutionContext, Future}

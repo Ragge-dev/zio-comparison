@@ -1,4 +1,4 @@
-package com.kognic.comparison.vanilla.storage
+package com.kognic.comparison.vanilla.filestorage
 
 import com.kognic.common.utils.RetryFuture.retry
 import com.kognic.comparison.DomainError.NotFoundError

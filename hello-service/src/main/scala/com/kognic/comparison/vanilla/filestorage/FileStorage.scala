@@ -1,4 +1,4 @@
-package com.kognic.comparison.vanilla.storage
+package com.kognic.comparison.vanilla.filestorage
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.{DomainError, User}
