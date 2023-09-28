@@ -1,10 +1,7 @@
 # Services and business logic
 
 ## Compare Service Pattern
-In order to not have any access code, checkout the branch `service-pattern` using:
-```bash
-git checkout service-pattern
-```
+Now we are going to add typed errors to our services. 
 ### Vanilla Scala
 
 ### ZIO
