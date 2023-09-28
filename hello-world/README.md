@@ -40,14 +40,17 @@ or succeed with a value of type `A`.*
 
 Our first program in ZIO has a little different syntax:
 ```scala
+
 object MainZIO extends ZIOAppDefault {
-  override def run: ZIO[Any, IOException, Unit] = Console.printLine("Hello World! From ZIO:)")
+  override def run: ZIO[Any, IOException, Unit] = program
+  def program: ZIO[Any, IOException, Unit] = Console.printLine("Hello World! From ZIO:)")
 }
 ```
 
-ZIO has a `run` method you need to override, which acts as the main function. The biggest difference 
-otherwise is that when you print something using ZIO it returns a `ZIO` type, which can fail with
-`IOException` or succeed returning a `Unit`.
+ZIO has a `run` method you need to override, which acts as the main function. Just for clarity
+I usually define my actual program in a method with the same name, it does little here but can 
+help in more complex cases. The biggest difference otherwise is that when you print something 
+using ZIO it returns a `ZIO` type, which can fail with `IOException` or succeed returning a `Unit`.
 
 ### Testing
 Also have a look in the test file where we are able to test what the program prints to the console, not
