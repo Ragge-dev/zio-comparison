@@ -1,10 +1,8 @@
 package com.kognic.comparison.vanilla.filestorage
 
-import com.kognic.common.utils.RetryFuture.retry
 import com.kognic.comparison.DomainError.NotFoundError
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.{DomainError, User}
-import com.kognic.core.application.SystemActorSystem.Implicits.scheduler
 import spray.json.*
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -14,7 +12,7 @@ import scala.util.{Try, Using}
 
 class FileStorageImpl(baseDir: Path)(implicit ec: ExecutionContext) extends FileStorage {
   def getUser(userId: UserId): Future[Either[DomainError, User]] =
-    retry("getUser")(getUserFromFile(userId))
+    getUserFromFile(userId)
       .map(Right(_))
       .recoverWith {
         case e => Future.successful(Left(NotFoundError(s"User with id $userId not found", e)))

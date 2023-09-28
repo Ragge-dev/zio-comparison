@@ -9,7 +9,7 @@ import com.kognic.core.application.ThreadPools.Implicits.mappingExecutionContext
 object Main extends App {
   private val userService = UserService()
 
-  val userIds = Seq(7, 1, 2, 3, 4, 5, 6).map(id => UserId(id))
+  val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
   // Could do something specific for each error here (e.g. return specific http status code)
   private def handleUsers(users: Either[DomainError, Seq[User]]): Unit = users match {

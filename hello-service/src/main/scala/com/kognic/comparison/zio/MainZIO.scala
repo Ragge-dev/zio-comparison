@@ -13,7 +13,7 @@ import scala.reflect.io.Path
 object MainZIO extends ZIOAppDefault {
   private val basePath = ZLayer.succeed(Path("/."))
 
-  val userIds = Seq(7, 1, 2, 3, 4, 5, 6).map(id => UserId(id))
+  val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
   // Program has UserServiceZIO as dependency, which needs to be provided
   override def run: ZIO[Any, IOException, Unit] = program
