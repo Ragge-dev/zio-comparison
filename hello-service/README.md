@@ -1,13 +1,13 @@
 # Compare Service Pattern
 ### Vanilla Scala
 Let's start simple and then build on top of our vanilla Scala example. We
-start with 3 files `Main.scala`, `UserService.scala` and `FileStorage.scala`:
+start with 3 files of interest `Main.scala`, `UserServiceImpl.scala` and `FileStorage.scala`:
 ```scala
 trait FileStorage {
   def getUser(userId: UserId): Future[User]
 }
 
-class UserService(fileStorage: FileStorage)(implicit ec: ExecutionContext) {
+class UserServiceImpl(fileStorage: FileStorage)(implicit ec: ExecutionContext) {
   def getUsers(userIds: Seq[UserId]): Future[Seq[User]] =
     for {
       users <- Future.sequence(userIds.map(fileStorage.getUser))
@@ -18,7 +18,7 @@ class UserService(fileStorage: FileStorage)(implicit ec: ExecutionContext) {
 fetch multiple users. Quite straight forward. In `Main.scala` we fetch the users and print them:
 ```scala
 object Main extends App {
-  private val userService = UserService()
+  private val userService = UserServiceImpl()
   val userIds = Seq(7, 1, 2, 3, 4, 5, 6).map(id => UserId(id))
   private def handleUsers(users: Seq[User]): Unit = users.foreach(println)
 
@@ -52,15 +52,11 @@ how we call the method from the `MainZIO` object.
 trait UserServiceZIO {
   def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]]
 }
-
-trait UserServiceZIO {
-  def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]]
-}
 ```
 
 Here `Any` means that the method has no requirements for the environment, and `Nothing` means that
-the method cannot fail (execpt in some very unexpected way, in that case the ZIO will
-[die](https://zio.dev/reference/core/cause/#die) which we should not handle).
+the method cannot fail (execpt in some very unexpected way, in that case the ZIO will 
+[die](https://zio.dev/reference/core/cause/#die)). 
 
 In `MainZIO.scala` we have the following code:
 ```scala
@@ -75,5 +71,5 @@ private def printUser(user: User): ZIO[Any, Nothing, Unit] =
 ```
 
 To have it mirror the vanilla code we don't handle any errors, in the ZIO case `Console.printLine`
-can fail. We add `.orDie` to say that if it does not succeed we want the program to crash.
-To see how we handle errors, checkout the branch `service-pattern-2`.
+can fail with `IOException`. We add `.orDie` to say that if it does not succeed we want the program 
+to crash. 

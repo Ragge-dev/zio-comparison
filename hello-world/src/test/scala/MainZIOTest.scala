@@ -9,7 +9,7 @@ object MainZIOTest extends ZIOSpecDefault {
     // Works because ZIO is referentially transparent
     // https://blog.rockthejvm.com/referential-transparency/
     test("The output should be correct Example 1") {
-      val program = MainZIO.program
+      val program = HelloWorldZIO.program
       for {
         _ <- ZIO.foreachDiscard(1.to(5))(_ => program)
         consoleOutputs <- TestConsole.output
@@ -19,7 +19,7 @@ object MainZIOTest extends ZIOSpecDefault {
     },
     test("The output should be correct Example 2") {
       for {
-        _ <- ZIO.foreachDiscard(1.to(5))(_ => MainZIO.program)
+        _ <- ZIO.foreachDiscard(1.to(5))(_ => HelloWorldZIO.program)
         consoleOutputs <- TestConsole.output
       } yield assertTrue(consoleOutputs.head == "Hello World! From ZIO:)\n",
         consoleOutputs.length == 5
