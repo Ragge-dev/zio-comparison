@@ -7,8 +7,7 @@ import zio.{ZIO, ZLayer}
 
 
 case class UserServiceZIOImpl(fileStorage: FileStorageZIO) extends UserServiceZIO {
-  def getUsers(userIds: Seq[UserId]): ZIO[Any, DomainError, Seq[User]] =
-    ZIO.foreachPar(userIds)(fileStorage.getUser)
+  def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]] = ???
 }
 
 object UserServiceZIOImpl {

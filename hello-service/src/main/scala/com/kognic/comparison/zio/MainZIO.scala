@@ -5,7 +5,7 @@ import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.zio.filestorage.FileStorageZIOImpl
 import com.kognic.comparison.zio.service.{UserServiceZIO, UserServiceZIOImpl}
 import com.kognic.comparison.{DomainError, User}
-import zio.{Console, IO, ZIO, ZIOAppDefault, ZLayer}
+import zio.{Console, ZIO, ZIOAppDefault, ZLayer}
 
 import java.io.IOException
 import scala.reflect.io.Path

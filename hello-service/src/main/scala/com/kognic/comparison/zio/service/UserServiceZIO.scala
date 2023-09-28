@@ -1,11 +1,11 @@
 package com.kognic.comparison.zio.service
 
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.{DomainError, User}
+import com.kognic.comparison.User
 import zio.ZIO
 
 trait UserServiceZIO {
-  def getUsers(userIds: Seq[UserId]): ZIO[Any, DomainError, Seq[User]]
+  def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]]
 }
 
 object UserServiceZIO {
@@ -18,6 +18,6 @@ object UserServiceZIO {
   * this pattern to be able to call getUsers like a static method, but then we need to provide the dependency
   * ourselves (see UserServiceZIOImplTest).
   */
-  def getUsers(userIds: Seq[UserId]): ZIO[UserServiceZIO, DomainError, Seq[User]] =
+  def getUsers(userIds: Seq[UserId]): ZIO[UserServiceZIO, Nothing, Seq[User]] =
     ZIO.serviceWithZIO(_.getUsers(userIds))
 }
