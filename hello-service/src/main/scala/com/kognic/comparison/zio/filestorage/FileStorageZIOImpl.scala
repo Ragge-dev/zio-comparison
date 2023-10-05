@@ -11,13 +11,14 @@ import scala.io.{BufferedSource, Source}
 import scala.reflect.io.Path
 
 case class FileStorageZIOImpl(baseDir: Path) extends FileStorageZIO {
-  // One line to get exponential backoff
-  private val exponentialBackoffSchedule = (Schedule.exponential(10.milliseconds) >>> Schedule.elapsed).whileOutput(_ < 1.seconds)
 
   def getUser(userId: UserId): ZIO[Any, DomainError, User] = {
+    // One line to get exponential backoff
+    val exponentialBackoffSchedule = (Schedule.exponential(10.milliseconds) >>> Schedule.elapsed).whileOutput(_ < 1.seconds)
     getUserImpl(userId).retry(exponentialBackoffSchedule)
   }
 
+  // Scopes define the lifetime of resources, in this case the source is only open during the parsing of the user
   private def getUserImpl(userId: UserId): ZIO[Any, DomainError, User] =
     ZIO.scoped {
       // Some errors we don't want or need to recover from, then we can use orDie which will "let it crash"
@@ -26,7 +27,6 @@ case class FileStorageZIOImpl(baseDir: Path) extends FileStorageZIO {
     }
 
   def parseUser(source: BufferedSource): ZIO[Any, IOError, User] = {
-    // Attempt will catch any exceptions and wrap them in a failed ZIO
     ZIO.attempt(source.getLines().mkString.parseJson.convertTo[User])
       .mapError(e => IOError(s"Could not parse file to user", e))
   }
