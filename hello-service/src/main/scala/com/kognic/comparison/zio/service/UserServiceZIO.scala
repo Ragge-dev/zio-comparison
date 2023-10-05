@@ -2,7 +2,7 @@ package com.kognic.comparison.zio.service
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.{DomainError, User}
-import zio.{IO, ZIO}
+import zio.ZIO
 
 trait UserServiceZIO {
   def getUsers(userIds: Seq[UserId]): ZIO[Any, DomainError, Seq[User]]

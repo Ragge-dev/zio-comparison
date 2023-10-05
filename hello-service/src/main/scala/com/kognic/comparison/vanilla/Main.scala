@@ -2,12 +2,13 @@ package com.kognic.comparison.vanilla
 
 import com.kognic.comparison.DomainError.NotFoundError
 import com.kognic.comparison.Ids.UserId
+import com.kognic.comparison.vanilla.service.UserServiceImpl
 import com.kognic.comparison.{DomainError, User}
 import com.kognic.core.application.ThreadPools.Implicits.mappingExecutionContext
 
 
 object Main extends App {
-  private val userService = UserService()
+  private val userService = UserServiceImpl()
 
   val userIds = Seq(7, 1, 2, 3, 4, 5, 6).map(id => UserId(id))
 

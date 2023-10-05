@@ -3,7 +3,7 @@ package com.kognic.comparison.zio.service
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.zio.filestorage.FileStorageZIO
 import com.kognic.comparison.{DomainError, User}
-import zio.{IO, URLayer, ZIO, ZLayer}
+import zio.{ZIO, ZLayer}
 
 
 case class UserServiceZIOImpl(fileStorage: FileStorageZIO) extends UserServiceZIO {

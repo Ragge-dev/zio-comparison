@@ -1,4 +1,4 @@
-package com.kognic.comparison.vanilla
+package com.kognic.comparison.vanilla.service
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.vanilla.filestorage.{FileStorage, FileStorageImpl}
@@ -6,7 +6,7 @@ import com.kognic.comparison.{DomainError, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserService(fileStorage: FileStorage)(implicit ec: ExecutionContext) {
+class UserServiceImpl(fileStorage: FileStorage)(implicit ec: ExecutionContext) extends UserService {
   def getUsers(userIds: Seq[UserId]): Future[Either[DomainError, Seq[User]]] =
     for {
       users <- Future.sequence(userIds.map(fileStorage.getUser))
@@ -20,9 +20,11 @@ class UserService(fileStorage: FileStorage)(implicit ec: ExecutionContext) {
   }
 }
 
-object UserService {
-  import com.kognic.core.application.ThreadPools.Implicits.ioBoundExecutor
-  private lazy val instance = new UserService(FileStorageImpl())
+object UserServiceImpl {
 
-  def apply(): UserService = instance
+  import com.kognic.core.application.ThreadPools.Implicits.ioBoundExecutor
+
+  private lazy val instance = new UserServiceImpl(FileStorageImpl())
+
+  def apply(): UserServiceImpl = instance
 }
