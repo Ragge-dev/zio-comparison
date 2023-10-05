@@ -5,7 +5,7 @@ import com.kognic.comparison.DomainError.{IOError, NotFoundError}
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.{DomainError, User}
 import spray.json.*
-import zio.{Console, Schedule, URLayer, ZIO, ZLayer, durationInt}
+import zio.{Console, Schedule, ZIO, ZLayer, durationInt}
 
 import scala.io.{BufferedSource, Source}
 import scala.reflect.io.Path
@@ -26,10 +26,9 @@ case class FileStorageZIOImpl(baseDir: Path) extends FileStorageZIO {
         ZIO.acquireReleaseWith(openSource(userId))(closeSource)(parseUser)
     }
 
-  def parseUser(source: BufferedSource): ZIO[Any, IOError, User] = {
+  def parseUser(source: BufferedSource): ZIO[Any, IOError, User] =
     ZIO.attempt(source.getLines().mkString.parseJson.convertTo[User])
       .mapError(e => IOError(s"Could not parse file to user", e))
-  }
 
   private def openSource(userId: UserId): ZIO[Any, NotFoundError, BufferedSource] = {
     val path = baseDir / s"user_$userId.json"
@@ -40,10 +39,12 @@ case class FileStorageZIOImpl(baseDir: Path) extends FileStorageZIO {
       }
   }
 
-  def closeSource(source: BufferedSource): ZIO[Any, Nothing, Unit] = ZIO.succeed(source.close())
+  private def closeSource(source: BufferedSource): ZIO[Any, Nothing, Unit] = ZIO.succeed(source.close())
 
 }
 
 object FileStorageZIOImpl {
-  val layer: URLayer[Path, FileStorageZIO] = ZLayer.fromFunction(FileStorageZIOImpl.apply _)
+  // To use FileStorageZIOImpl as a dependency we need to create a ZLayer with it.
+  // Note that this ZLayer has a dependency as well, on a Path
+  val layer: ZLayer[Path, Nothing, FileStorageZIOImpl] = ZLayer.fromFunction(FileStorageZIOImpl.apply _)
 }

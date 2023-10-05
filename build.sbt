@@ -5,6 +5,7 @@ lazy val dependencies = Seq(
   "dev.zio" %% "zio" % "2.0.13",
   "dev.zio" %% "zio-test" % "2.0.13",
   "dev.zio" %% "zio-test-sbt" % "2.0.13" % Test,
+  "dev.zio" %% "zio-mock" % "1.0.0-RC11" % Test,
   "com.kognic.platform" % "core-tagging" % "5.2.0",
   "com.kognic.platform" % "json" % "5.2.0",
   "com.kognic.platform" % "utils" % "5.2.0",

@@ -12,12 +12,11 @@ class UserServiceImpl(fileStorage: FileStorage)(implicit ec: ExecutionContext) e
       users <- Future.sequence(userIds.map(fileStorage.getUser))
     } yield liftError(users)
 
-  private def liftError(users: Seq[Either[DomainError, User]]): Either[DomainError, Seq[User]] = {
+  private def liftError(users: Seq[Either[DomainError, User]]): Either[DomainError, Seq[User]] =
     users.foldLeft(Right(Seq()): Either[DomainError, Seq[User]]) {
       case (acc, Right(user)) => acc.map(_ :+ user)
       case (_, Left(e)) => Left(e)
     }
-  }
 }
 
 object UserServiceImpl {
