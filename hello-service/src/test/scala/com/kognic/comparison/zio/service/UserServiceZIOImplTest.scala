@@ -8,8 +8,8 @@ import zio.test.*
 
 object UserServiceZIOImplTest extends ZIOSpecDefault {
   override def spec: Spec[TestEnvironment, Any] = suite("MainZIO")(
-    // We test that the program actually outputs the message
-    test("The message should be correct") {
+    test("getUsers should return a list of users") {
+      // We instantiate a mock for FileStorageZIO, which we will use as a dependency for UserServiceZIO
       val fileStorageMock = FileStorageZIOMock.GetUser(
         assertion = Assertion.equalTo(UserId(1)),
         result = Expectation.value(
@@ -23,6 +23,7 @@ object UserServiceZIOImplTest extends ZIOSpecDefault {
       )
 
       val result = for {
+        // We are not using UserServiceZIOImpl! Instead we are using the UserServiceZIO companion object
         users <- UserServiceZIO.getUsers(Seq(UserId(1), UserId(2)))
       } yield assertTrue(users == Seq(
         User(UserId(1), "Jane", 66),

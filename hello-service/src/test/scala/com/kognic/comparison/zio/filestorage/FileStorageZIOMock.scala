@@ -5,6 +5,7 @@ import com.kognic.comparison.{DomainError, User}
 import zio.mock.*
 import zio.{URLayer, ZIO, ZLayer}
 
+// Mock implementation of FileStorageZIO
 case class FileStorageZIOMock(proxy: Proxy) extends FileStorageZIO {
   override def getUser(userId: UserId): ZIO[Any, DomainError, User] =
     proxy(FileStorageZIOMock.GetUser, userId)
