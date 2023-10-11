@@ -47,6 +47,7 @@ object MainZIO extends ZIOAppDefault {
 }
 ```
 
+Where `Console` is a companion object provided by the zio package. 
 ZIO has a `run` method you need to override, which acts as the main function. Just for clarity
 I usually define my actual program in a method with the same name, it does little here but can 
 help in more complex cases. The biggest difference otherwise is that when you print something 

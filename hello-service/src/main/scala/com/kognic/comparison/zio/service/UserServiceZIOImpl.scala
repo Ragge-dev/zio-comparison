@@ -13,7 +13,8 @@ case class UserServiceZIOImpl(fileStorage: FileStorageZIO) extends UserServiceZI
 
 object UserServiceZIOImpl {
   // To use UserServiceZIOImpl as a dependency we need to create a ZLayer with it
-  // Note that this ZLayer has a dependency as well, it requires a FileStorageZIO
+  // Note that this ZLayer has a dependency on FileStorageZIO, the same dependency
+  // as the UserServiceZIOImpl class does
   val layer: ZLayer[FileStorageZIO, Nothing, UserServiceZIOImpl] =
     ZLayer.fromFunction(UserServiceZIOImpl.apply _)
 }
