@@ -18,11 +18,10 @@ case class FileStorageZIOImpl(baseDir: Path) extends FileStorageZIO {
     getUserImpl(userId).retry(exponentialBackoffSchedule)
   }
 
-  // Scopes define the lifetime of resources, in this case the source is only open during the parsing of the user
   private def getUserImpl(userId: UserId): ZIO[Any, DomainError, User] =
-      // Some errors we don't want or need to recover from, then we can use orDie which will "let it crash"
-      Console.printLine(s"Reading user $userId from file").orDie *>
-        ZIO.acquireReleaseWith(openSource(userId))(closeSource)(parseUser)
+  // Some errors we don't want or need to recover from, then we can use orDie which will "let it crash"
+    Console.printLine(s"Reading user $userId from file").orDie *>
+      ZIO.acquireReleaseWith(openSource(userId))(closeSource)(parseUser)
 
   def parseUser(source: BufferedSource): ZIO[Any, IOError, User] =
     ZIO.attempt(source.getLines().mkString.parseJson.convertTo[User])
