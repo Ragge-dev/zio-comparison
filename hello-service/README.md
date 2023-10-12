@@ -15,7 +15,7 @@ class UserServiceImpl(fileStorage: FileStorage)(implicit ec: ExecutionContext) {
 }
 ```
 `FileStorage` has a method to fetch a single user, and `UserService` has a method to
-fetch multiple users. Quite straight forward. In `Main.scala` we fetch the users and print them:
+fetch multiple users. In `Main.scala` we fetch the users and print them:
 ```scala
 object Main extends App {
   private val userService = UserServiceImpl()
@@ -28,12 +28,10 @@ object Main extends App {
   result.map(_ => System.exit(0))
 }
 ```
-However, the code now does not show us if we have to handle any errors e.g. from `FileStorage`. If
-that method can fail in some way we can expect would be good if we made that clear for anyone calling
-that method. In order to have a look at how we can solve this, checkout the branch `service-pattern-2`:
-```bash
-git checkout service-pattern-2
-```
+However, the code now does not show us if we have to handle any errors from `FileStorage`. All we have
+is a Future, which can fail with a fatal or non-fatal `Throwable` error. Many non-fatal errors can be 
+expected and would be good to know about for anyone calling that method. We might want to handle 
+certain errors, ignore others and let some continue to bubble up.
 
 ### ZIO
 Reminder:
@@ -45,12 +43,18 @@ Here we have a brief look at the [Service Pattern](https://zio.dev/reference/ser
 in ZIO.
 
 We have the same three files as in vanilla Scala, but we have suffixed them with ZIO just to make it
-very explicit in this case. In the vanilla case did not need to have a trait for the `UserService`
-class (even though it is good practice to do so), but in ZIO we need to have a trait because of
+very explicit in this case. In the vanilla case we did not need to have a trait for the `UserServiceImpl`
+class (even though it is good practice to use), but in ZIO we need to have a trait because of
 how we call the method from the `MainZIO` object.
 ```scala
 trait UserServiceZIO {
   def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]]
+}
+
+object UserServiceZIO {
+  // For an explanation of this funciton, see the actual code
+  def getUsers(userIds: Seq[UserId]): ZIO[UserServiceZIO, Nothing, Seq[User]] =
+    ZIO.serviceWithZIO(_.getUsers(userIds))
 }
 ```
 
@@ -73,3 +77,10 @@ private def printUser(user: User): ZIO[Any, Nothing, Unit] =
 To have it mirror the vanilla code we don't handle any errors, in the ZIO case `Console.printLine`
 can fail with `IOException`. We add `.orDie` to say that if it does not succeed we want the program 
 to crash. 
+
+
+## Next
+In order to have a look at how we can solve this, checkout the branch `service-pattern-2`:
+```bash
+git checkout service-pattern-2
+```
