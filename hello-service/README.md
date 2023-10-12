@@ -31,7 +31,8 @@ object Main extends App {
 However, the code now does not show us if we have to handle any errors from `FileStorage`. All we have
 is a Future, which can fail with a fatal or non-fatal `Throwable` error. Many non-fatal errors can be 
 expected and would be good to know about for anyone calling that method. We might want to handle 
-certain errors, ignore others and let some continue to bubble up.
+certain errors, act on some, ignore others and let some continue to bubble up. Also, we want to
+know if we don't have to worry about errors!
 
 ### ZIO
 Reminder:
@@ -80,7 +81,9 @@ to crash.
 
 
 ## Next
-In order to have a look at how we can solve this, checkout the branch `service-pattern-2`:
+As mentioned earlier it can be beneficent to type errors, we use it to great effect already in our code in e.g.
+the `ResponseConverter` trait in scala-common. In order to have a look at how we can solve this, checkout the branch 
+`service-pattern-2`:
 ```bash
 git checkout service-pattern-2
 ```
