@@ -4,6 +4,7 @@ import com.kognic.comparison.DomainError.{JsonParseError, UserNotFoundError}
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.{DomainError, User}
 import spray.json.*
+import spray.json.JsonParser.ParsingException
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.{BufferedSource, Source}
@@ -23,7 +24,7 @@ class UserRepoImpl(baseDir: Path)(implicit e: ExecutionContext) extends UserRepo
       .map(Right(_))
       .recover {
         case e: NullPointerException => Left(UserNotFoundError.fromException(e))
-        case e: DeserializationException => Left(JsonParseError.fromException(e))
+        case e: ParsingException => Left(JsonParseError.fromException(e))
       }
   }
 
