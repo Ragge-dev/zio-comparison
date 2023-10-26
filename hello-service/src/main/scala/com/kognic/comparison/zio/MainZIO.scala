@@ -11,15 +11,14 @@ import scala.reflect.io.Path
 
 object MainZIO extends ZIOAppDefault {
   private val basePath = ZLayer.succeed(Path("/."))
-
-  val userIds = Seq(7, 1, 2, 3, 4, 5, 6).map(id => UserId(id))
+  val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
   /*
-   Program can now fail in several different ways, but now we only catch and print
+   Our program can now fail in several different ways, but now we only catch and print
    any errors.
    */
-  override def run: ZIO[Any, IOException, Unit] = program
-    .catchAll(error => Console.printLine(s"Error: $error"))
+  override def run: ZIO[Any, Nothing, Unit] = program
+    .catchAllCause(e => ZIO.logErrorCause("Error running program: ", e))
     .provide(
       UserServiceZIOImpl.layer, // Has a FileStorageZIO as dependency, which needs to be provided
       UserRepoZIOImpl.layer, // Has a Path as dependency, which needs to be provided
