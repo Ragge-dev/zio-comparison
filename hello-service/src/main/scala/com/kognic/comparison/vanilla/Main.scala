@@ -5,6 +5,9 @@ import com.kognic.comparison.User
 import com.kognic.comparison.vanilla.service.UserServiceImpl
 import com.kognic.core.application.ThreadPools.Implicits.mappingExecutionContext
 
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationDouble
+
 
 object Main extends App {
   private val userService = UserServiceImpl()
@@ -18,6 +21,7 @@ object Main extends App {
     users <- userService.getUsers(userIds)
   } yield handleUsers(users)
 
-  result.map(_ => System.exit(0))
+  // Now when we can run the program, we need to wait for the result
+  Await.result(result, 1.minute)
 
 }
