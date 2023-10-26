@@ -2,16 +2,16 @@ package com.kognic.comparison.zio
 
 import com.kognic.comparison.DomainError.{IOError, NotFoundError}
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.zio.filestorage.FileStorageZIOImpl
+import com.kognic.comparison.zio.repo.UserRepoZIOImpl
 import com.kognic.comparison.zio.service.{UserServiceZIO, UserServiceZIOImpl}
 import com.kognic.comparison.{DomainError, User}
-import zio.{Console, IO, ZIO, ZIOAppDefault, ZLayer}
+import zio.{Console, ULayer, ZIO, ZIOAppDefault, ZLayer}
 
 import java.io.IOException
 import scala.reflect.io.Path
 
 object MainZIO extends ZIOAppDefault {
-  private val basePath = ZLayer.succeed(Path("/."))
+  private val basePath: ULayer[Path] = ZLayer.succeed(Path("/."))
 
   val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
@@ -20,7 +20,7 @@ object MainZIO extends ZIOAppDefault {
     .catchAll(handleError)
     .provide(
       UserServiceZIOImpl.layer, // Has a FileStorageZIO as dependency, which needs to be provided
-      FileStorageZIOImpl.layer, // Has a Path as dependency, which needs to be provided
+      UserRepoZIOImpl.layer, // Has a Path as dependency, which needs to be provided
       basePath // Has no dependencies
     )
 

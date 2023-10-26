@@ -2,7 +2,7 @@ package com.kognic.comparison.zio.service
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.User
-import com.kognic.comparison.zio.filestorage.FileStorageZIOMock
+import com.kognic.comparison.zio.repo.UserRepoZIOMock
 import zio.mock.{Expectation, MockReporter}
 import zio.test.*
 
@@ -10,12 +10,12 @@ object UserServiceZIOImplTest extends ZIOSpecDefault {
   override def spec: Spec[TestEnvironment, Any] = suite("MainZIO")(
     test("getUsers should return a list of users") {
       // We instantiate a mock for FileStorageZIO, which we will use as a dependency for UserServiceZIO
-      val fileStorageMock = FileStorageZIOMock.GetUser(
+      val fileStorageMock = UserRepoZIOMock.GetUser(
         assertion = Assertion.equalTo(UserId(1)),
         result = Expectation.value(
           User(UserId(1), "Jane", 66),
         )
-      ) && FileStorageZIOMock.GetUser(
+      ) && UserRepoZIOMock.GetUser(
         assertion = Assertion.equalTo(UserId(2)),
         result = Expectation.value(
           User(UserId(2), "Joe", 33),
