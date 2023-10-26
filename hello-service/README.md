@@ -60,7 +60,9 @@ case class UserServiceZIOImpl(userRepo: UserRepoZIO) extends UserServiceZIO {
 ```
 Here `Any` means that the method has no required environment, and `Nothing` means that
 the method cannot fail (execpt in some very unexpected way, in that case the ZIO will 
-[die](https://zio.dev/reference/core/cause/#die)). You may notice that  
+[die](https://zio.dev/reference/core/cause/#die)). You may notice that UserServiceZIOImpl
+here is a case class, this is simply to get the `apply()` method for free, which makes
+the syntax for creating a new instance clean.
 
 In `MainZIO.scala` we have the following code:
 ```scala
@@ -73,16 +75,14 @@ In `MainZIO.scala` we have the following code:
 private def printUser(user: User): ZIO[Any, Nothing, Unit] =
   Console.printLine(user).orDie
 ```
-
+Wonder what a ZIO function does? Simply look at the function definition for the documentation!
 To have it mirror the vanilla code we don't handle any errors, in the ZIO case `Console.printLine`
-can fail with `IOException`. We add `.orDie` to say that if it does not succeed we want the program 
-to crash. 
-
+can fail with `IOException` (because writing to the console can always fail, also in vanilla 
+Scala!). We add `.orDie` to say that if it does not succeed we want the program to crash. 
 
 ## Next
-As mentioned earlier it can be beneficent to type errors, we use it to great effect already in our code in e.g.
-the `ResponseConverter` trait in scala-common. In order to have a look at how we can solve this, checkout the branch 
-`service-pattern-2`:
+Now we want to implement everything and get this program running. Check that out in the next branch:
+`service-pattern-2`
 ```bash
 git checkout service-pattern-2
 ```
