@@ -1,7 +1,7 @@
 package com.kognic.comparison.zio.repo
 
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.{DomainError, User}
+import com.kognic.comparison.User
 import zio.mock.*
 import zio.{URLayer, ZIO, ZLayer}
 
