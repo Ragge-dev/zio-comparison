@@ -13,17 +13,17 @@ case class UserRepoZIOImpl(baseDir: Path) extends UserRepoZIO {
    * Parsing the User and opening the file can fail, so we use ZIO.attempt to catch
    * any errors. Every error in ZIO is a Throwable.
    */
-  def getUser(userId: UserId): ZIO[Any, Throwable, User] =
+  def getUser(userId: UserId): ZIO[Any, Throwable, User] = {
+    val path = baseDir / s"user_$userId.json"
     Console.printLine(s"Reading user $userId from file") *>
-      ZIO.acquireReleaseWith(openSource(userId))(closeSource)(parseUser)
+      ZIO.acquireReleaseWith(openSource(path))(closeSource)(parseUser)
+  }
 
   def parseUser(source: BufferedSource): ZIO[Any, Throwable, User] =
     ZIO.attempt(source.getLines().mkString.parseJson.convertTo[User])
 
-  private def openSource(userId: UserId): ZIO[Any, Throwable, BufferedSource] = {
-    val path = baseDir / s"user_$userId.json"
+  private def openSource(path: Path): ZIO[Any, Throwable, BufferedSource] =
     ZIO.attempt(Source.fromInputStream(getClass.getResourceAsStream(path.toString())))
-  }
 
   private def closeSource(source: BufferedSource): ZIO[Any, Nothing, Unit] = ZIO.succeed(source.close())
 
