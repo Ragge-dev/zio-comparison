@@ -1,5 +1,6 @@
 package com.kognic.comparison.zio
 
+import com.kognic.comparison.DomainError.{JsonParseError, UserNotFoundError}
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.zio.repo.UserRepoZIOImpl
 import com.kognic.comparison.zio.service.{UserServiceZIO, UserServiceZIOImpl}
@@ -16,6 +17,10 @@ object MainZIO extends ZIOAppDefault {
   Program can only fail with our DomainError type
    */
   override def run: ZIO[Any, DomainError, Unit] = program
+    .catchAll {
+      case _: UserNotFoundError => Console.printLine("Special case for UserNotFound").orDie
+      case _: JsonParseError => Console.printLine("Special case for JsonParseError").orDie
+    }
     .provide(
       UserServiceZIOImpl.layer, // Has a FileStorageZIO as dependency, which needs to be provided
       UserRepoZIOImpl.layer, // Has a Path as dependency, which needs to be provided

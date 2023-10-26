@@ -9,4 +9,7 @@ object DomainError {
     def fromException(error: Exception): UserNotFoundError = UserNotFoundError(error.getMessage, error)
   }
   case class JsonParseError(msg: String, error: Throwable) extends DomainError(msg, error)
+  object JsonParseError {
+    def fromException(error: Exception): JsonParseError = JsonParseError(error.getMessage, error)
+  }
 }
