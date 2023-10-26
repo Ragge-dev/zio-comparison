@@ -2,7 +2,7 @@ package com.kognic.comparison.vanilla.service
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.User
-import com.kognic.comparison.vanilla.filestorage.{UserRepo, UserRepoImpl}
+import com.kognic.comparison.vanilla.repo.{UserRepo, UserRepoImpl}
 
 import scala.concurrent.{ExecutionContext, Future}
 

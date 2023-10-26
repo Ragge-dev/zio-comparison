@@ -2,7 +2,7 @@ package com.kognic.comparison.zio.service
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.User
-import com.kognic.comparison.zio.filestorage.UserRepoZIOMock
+import com.kognic.comparison.zio.repo.UserRepoZIOMock
 import zio.mock.{Expectation, MockReporter}
 import zio.test.*
 

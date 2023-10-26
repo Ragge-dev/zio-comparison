@@ -1,7 +1,7 @@
 package com.kognic.comparison.zio.service
 
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.zio.filestorage.UserRepoZIO
+import com.kognic.comparison.zio.repo.UserRepoZIO
 import com.kognic.comparison.{DomainError, User}
 import zio.{ZIO, ZLayer}
 

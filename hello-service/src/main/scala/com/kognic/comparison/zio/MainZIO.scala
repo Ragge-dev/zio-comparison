@@ -2,7 +2,7 @@ package com.kognic.comparison.zio
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.User
-import com.kognic.comparison.zio.filestorage.UserRepoZIOImpl
+import com.kognic.comparison.zio.repo.UserRepoZIOImpl
 import com.kognic.comparison.zio.service.{UserServiceZIO, UserServiceZIOImpl}
 import zio.{Console, ZIO, ZIOAppDefault, ZLayer}
 

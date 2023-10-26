@@ -1,4 +1,4 @@
-package com.kognic.comparison.zio.filestorage
+package com.kognic.comparison.zio.repo
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.{DomainError, User}
