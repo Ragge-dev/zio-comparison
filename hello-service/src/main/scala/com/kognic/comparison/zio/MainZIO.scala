@@ -1,10 +1,9 @@
 package com.kognic.comparison.zio
 
-import com.kognic.comparison.DomainError.{IOError, NotFoundError}
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.zio.filestorage.FileStorageZIOImpl
+import com.kognic.comparison.User
+import com.kognic.comparison.zio.filestorage.UserRepoZIOImpl
 import com.kognic.comparison.zio.service.{UserServiceZIO, UserServiceZIOImpl}
-import com.kognic.comparison.{DomainError, User}
 import zio.{Console, ZIO, ZIOAppDefault, ZLayer}
 
 import java.io.IOException
@@ -19,7 +18,7 @@ object MainZIO extends ZIOAppDefault {
   override def run: ZIO[Any, IOException, Unit] = program
     .provide(
       UserServiceZIOImpl.layer, // Has a FileStorageZIO as dependency, which needs to be provided
-      FileStorageZIOImpl.layer, // Has a Path as dependency, which needs to be provided
+      UserRepoZIOImpl.layer, // Has a Path as dependency, which needs to be provided
       basePath // Has no dependencies
     )
 

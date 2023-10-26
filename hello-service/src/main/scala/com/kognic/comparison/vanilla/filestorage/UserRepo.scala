@@ -5,7 +5,7 @@ import com.kognic.comparison.{DomainError, User}
 
 import scala.concurrent.Future
 
-trait FileStorage {
+trait UserRepo {
   def getUser(userId: UserId): Future[User]
 }
 

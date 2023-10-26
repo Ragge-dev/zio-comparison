@@ -4,7 +4,7 @@ import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.{DomainError, User}
 import zio.ZIO
 
-trait FileStorageZIO {
+trait UserRepoZIO {
   def getUser(userId: UserId): ZIO[Any, Nothing, User]
 }
 

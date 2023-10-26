@@ -1,16 +1,17 @@
 # Compare Service Pattern
 ### Vanilla Scala
 Let's start simple and then build on top of our vanilla Scala example. We
-start with 3 files of interest `Main.scala`, `UserServiceImpl.scala` and `FileStorage.scala`:
+start with 3 files of interest `Main.scala`, `UserServiceImpl.scala` and `UserRepo.scala`:
+
 ```scala
-trait FileStorage {
+trait UserRepo {
   def getUser(userId: UserId): Future[User]
 }
 
-class UserServiceImpl(fileStorage: FileStorage)(implicit ec: ExecutionContext) {
+class UserServiceImpl(userRepo: UserRepo)(implicit ec: ExecutionContext) {
   def getUsers(userIds: Seq[UserId]): Future[Seq[User]] =
     for {
-      users <- Future.sequence(userIds.map(fileStorage.getUser))
+      users <- Future.sequence(userIds.map(userRepo.getUser))
     } yield users
 }
 ```
@@ -28,11 +29,12 @@ object Main extends App {
   result.map(_ => System.exit(0))
 }
 ```
-However, the code now does not show us if we have to handle any errors from `FileStorage`. All we have
-is a Future, which can fail with a fatal or non-fatal `Throwable` error. Many non-fatal errors can be 
-expected and would be good to know about for anyone calling that method. We might want to handle 
-certain errors, act on some, ignore others and let some continue to bubble up. Also, we want to
-know if we don't have to worry about errors!
+Go to the hello-service folder and try to compile the code using `sbt compile`, it works 
+even though `FileStorageImpl` has not
+implemented the `getUser` method! This is so that you can quickly create classes / services
+working towards interfaces without having to implement the interfaces immediately.
+
+Now try to run the code (either from terminal `sbt run` or IntelliJ), what happens?
 
 ### ZIO
 Reminder:
@@ -44,24 +46,21 @@ Here we have a brief look at the [Service Pattern](https://zio.dev/reference/ser
 in ZIO.
 
 We have the same three files as in vanilla Scala, but we have suffixed them with ZIO just to make it
-very explicit in this case. In the vanilla case we did not need to have a trait for the `UserServiceImpl`
-class (even though it is good practice to use), but in ZIO we need to have a trait because of
-how we call the method from the `MainZIO` object.
+very explicit in this case.
+
 ```scala
-trait UserServiceZIO {
-  def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]]
+trait UserRepoZIO {
+  def getUser(userId: UserId): ZIO[Any, Nothing, User]
 }
 
-object UserServiceZIO {
-  // For an explanation of this funciton, see the actual code
-  def getUsers(userIds: Seq[UserId]): ZIO[UserServiceZIO, Nothing, Seq[User]] =
-    ZIO.serviceWithZIO(_.getUsers(userIds))
+case class UserServiceZIOImpl(userRepo: UserRepoZIO) extends UserServiceZIO {
+  def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]] =
+    ZIO.foreachPar(userIds)(userRepo.getUser)
 }
 ```
-
-Here `Any` means that the method has no requirements for the environment, and `Nothing` means that
+Here `Any` means that the method has no required environment, and `Nothing` means that
 the method cannot fail (execpt in some very unexpected way, in that case the ZIO will 
-[die](https://zio.dev/reference/core/cause/#die)). 
+[die](https://zio.dev/reference/core/cause/#die)). You may notice that  
 
 In `MainZIO.scala` we have the following code:
 ```scala

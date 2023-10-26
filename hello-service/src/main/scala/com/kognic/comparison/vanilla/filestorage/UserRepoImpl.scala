@@ -6,13 +6,13 @@ import com.kognic.comparison.User
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.io.Path
 
-class FileStorageImpl(baseDir: Path)(implicit ec: ExecutionContext) extends FileStorage {
+class UserRepoImpl(baseDir: Path)(implicit ec: ExecutionContext) extends UserRepo {
   def getUser(userId: UserId): Future[User] = ???
 }
 
-object FileStorageImpl {
+object UserRepoImpl {
   import com.kognic.core.application.ThreadPools.Implicits.ioBoundExecutor
-  private lazy val instance = new FileStorageImpl(Path("/."))
+  private lazy val instance = new UserRepoImpl(Path("/."))
 
-  def apply(): FileStorageImpl = instance
+  def apply(): UserRepoImpl = instance
 }
