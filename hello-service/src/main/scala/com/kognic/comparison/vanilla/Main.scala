@@ -1,9 +1,7 @@
 package com.kognic.comparison.vanilla
 
-import com.kognic.comparison.DomainError.NotFoundError
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.vanilla.service.UserServiceImpl
-import com.kognic.comparison.{DomainError, User}
 import com.kognic.core.application.ThreadPools.Implicits.mappingExecutionContext
 
 

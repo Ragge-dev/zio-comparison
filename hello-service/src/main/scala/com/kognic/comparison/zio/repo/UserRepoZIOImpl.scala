@@ -1,13 +1,13 @@
 package com.kognic.comparison.zio.repo
 
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.{DomainError, User}
+import com.kognic.comparison.User
 import zio.{ZIO, ZLayer}
 
 import scala.reflect.io.Path
 
 case class UserRepoZIOImpl(baseDir: Path) extends UserRepoZIO {
-  def getUser(userId: UserId): ZIO[Any, DomainError, User] = ???
+  def getUser(userId: UserId): ZIO[Any, Nothing, User] = ???
 }
 
 object UserRepoZIOImpl {

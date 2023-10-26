@@ -1,13 +1,13 @@
 package com.kognic.comparison.zio.service
 
 import com.kognic.comparison.Ids.UserId
+import com.kognic.comparison.User
 import com.kognic.comparison.zio.repo.UserRepoZIO
-import com.kognic.comparison.{DomainError, User}
 import zio.{ZIO, ZLayer}
 
 
 case class UserServiceZIOImpl(fileStorage: UserRepoZIO) extends UserServiceZIO {
-  def getUsers(userIds: Seq[UserId]): ZIO[Any, DomainError, Seq[User]] =
+  def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]] =
     ZIO.foreachPar(userIds)(fileStorage.getUser)
 }
 

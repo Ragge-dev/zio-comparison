@@ -12,9 +12,7 @@ class UserRepoImpl(baseDir: Path)(implicit ec: ExecutionContext) extends UserRep
 }
 
 object UserRepoImpl {
-
-  import com.kognic.
-
+  import scala.concurrent.ExecutionContext.Implicits.global
   private lazy val instance = new UserRepoImpl(Path("/."))
 
   def apply(): UserRepoImpl = instance

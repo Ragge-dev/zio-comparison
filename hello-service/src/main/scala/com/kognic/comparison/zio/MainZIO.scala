@@ -1,10 +1,9 @@
 package com.kognic.comparison.zio
 
-import com.kognic.comparison.DomainError.{IOError, NotFoundError}
 import com.kognic.comparison.Ids.UserId
+import com.kognic.comparison.User
 import com.kognic.comparison.zio.repo.UserRepoZIOImpl
 import com.kognic.comparison.zio.service.{UserServiceZIO, UserServiceZIOImpl}
-import com.kognic.comparison.{DomainError, User}
 import zio.{Console, ULayer, ZIO, ZIOAppDefault, ZLayer}
 
 import java.io.IOException
@@ -17,26 +16,19 @@ object MainZIO extends ZIOAppDefault {
 
   // Program has UserServiceZIO as dependency, which needs to be provided
   override def run: ZIO[Any, IOException, Unit] = program
-    .catchAll(handleError)
     .provide(
       UserServiceZIOImpl.layer, // Has a FileStorageZIO as dependency, which needs to be provided
       UserRepoZIOImpl.layer, // Has a Path as dependency, which needs to be provided
       basePath // Has no dependencies
     )
 
-  private def program: ZIO[UserServiceZIO, DomainError, Unit] =
+  private def program: ZIO[UserServiceZIO, Nothing, Unit] =
     for {
       users <- UserServiceZIO.getUsers(userIds)
       _ <- ZIO.foreachDiscard(users)(a => printUser(a))
     } yield ()
 
-  private def printUser(user: User): ZIO[Any, IOError, Unit] =
-    Console.printLine(user)
-      .mapError(e => IOError("Failed to print users to terminal", e))
+  private def printUser(user: User): ZIO[Any, Nothing, Unit] =
+    Console.printLine(user).orDie
 
-  // Could do something specific for each error (e.g. return specific http status code)
-  private def handleError(error: DomainError): ZIO[Any, IOException, Unit] = error match {
-    case NotFoundError(msg, _) => Console.printLine(msg)
-    case IOError(msg, _) => Console.printLine(msg)
-  }
 }

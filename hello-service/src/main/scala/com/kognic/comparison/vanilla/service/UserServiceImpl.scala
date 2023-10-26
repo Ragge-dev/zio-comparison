@@ -17,8 +17,7 @@ class UserServiceImpl(fileStorage: UserRepo)(implicit ec: ExecutionContext) exte
 
 object UserServiceImpl {
 
-  import com.kognic.core.application.ThreadPools.Implicits.ioBoundExecutor
-
+  import scala.concurrent.ExecutionContext.Implicits.global
   private lazy val instance = new UserServiceImpl(UserRepoImpl())
 
   def apply(): UserServiceImpl = instance
