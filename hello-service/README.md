@@ -1,7 +1,7 @@
 # Services and business logic
 
 ## Compare Service Pattern
-Now we add typed errors to our service methods. We will use where `DomainError` is a sealed 
+Now we added typed errors to our service methods. We will use where `DomainError` is a sealed 
 trait that represents all the errors that can occur in our domain.
 
 ```scala

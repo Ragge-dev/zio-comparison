@@ -6,7 +6,8 @@ import com.kognic.comparison.vanilla.service.UserServiceImpl
 import com.kognic.core.application.DefaultService
 import com.kognic.core.application.ThreadPools.Implicits.mappingExecutionContext
 
-import scala.util.{Failure, Success}
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
 
 
 object Main extends App with DefaultService{
@@ -21,8 +22,6 @@ object Main extends App with DefaultService{
   private def printUsers(users: Seq[User]): Unit = users.foreach(println)
 
   // Now when we can run the program, we need to wait for the result
-  program.onComplete {
-    case Success(_) => ()
-    case Failure(exception) => logger.error("", exception)
-  }
+
+  Await.result(program, 1.minute)
 }

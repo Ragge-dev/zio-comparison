@@ -17,8 +17,7 @@ object MainZIO extends ZIOAppDefault {
    Our program can now fail in several different ways, but we don't know how it can fail. So we catch
    everything and print the errors.
    */
-  override def run: ZIO[Any, Nothing, Unit] = program
-    .catchAllCause(e => ZIO.logErrorCause("Error running program: ", e))
+  override def run: ZIO[Any, Throwable, Unit] = program
     .provide(
       UserServiceZIOImpl.layer, // Has a FileStorageZIO as dependency, which needs to be provided
       UserRepoZIOImpl.layer, // Has a Path as dependency, which needs to be provided
