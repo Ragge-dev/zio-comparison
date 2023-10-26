@@ -5,6 +5,6 @@ import com.kognic.comparison.User
 import zio.ZIO
 
 trait UserRepoZIO {
-  def getUser(userId: UserId): ZIO[Any, Nothing, User]
+  def getUser(userId: UserId): ZIO[Any, Throwable, User]
 }
 

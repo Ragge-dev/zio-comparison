@@ -7,7 +7,11 @@ import zio.{ZIO, ZLayer}
 
 
 class UserServiceZIOImpl(userRepo: UserRepoZIO) extends UserServiceZIO {
-  def getUsers(userIds: Seq[UserId]): ZIO[Any, Nothing, Seq[User]] =
+  /*
+  We needed to change from Nothing to Throwable here, since
+  it became apparent that our implementation of UserRepoZIO can fail.
+   */
+  def getUsers(userIds: Seq[UserId]): ZIO[Any, Throwable, Seq[User]] =
     ZIO.foreachPar(userIds)(userRepo.getUser)
 }
 

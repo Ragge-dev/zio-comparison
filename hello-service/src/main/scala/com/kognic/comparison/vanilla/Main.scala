@@ -14,12 +14,11 @@ object Main extends App {
 
   val userIds = Seq(7, 1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
-  // Could do something specific for each error here (e.g. return specific http status code)
-  private def handleUsers(users: Seq[User]): Unit = users.foreach(println)
-
   private val result = for {
     users <- userService.getUsers(userIds)
   } yield handleUsers(users)
+
+  private def handleUsers(users: Seq[User]): Unit = users.foreach(println)
 
   // Now when we can run the program, we need to wait for the result
   Await.result(result, 1.minute)
