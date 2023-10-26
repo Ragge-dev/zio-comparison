@@ -14,8 +14,8 @@ object MainZIO extends ZIOAppDefault {
   val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
   /*
-   Our program can now fail in several different ways, but now we only catch and print
-   any errors.
+   Our program can now fail in several different ways, but we don't know how it can fail. So we catch
+   everything and print the errors.
    */
   override def run: ZIO[Any, Nothing, Unit] = program
     .catchAllCause(e => ZIO.logErrorCause("Error running program: ", e))
