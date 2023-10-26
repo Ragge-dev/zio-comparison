@@ -26,11 +26,13 @@ object MainZIO extends ZIOAppDefault {
       basePath // Has no dependencies
     )
 
-  private def program: ZIO[UserServiceZIO, Throwable, Unit] = {
+  private def program: ZIO[UserServiceZIO, Throwable, Unit] =
     for {
       users <- UserServiceZIO.getUsers(userIds)
-      _ <- ZIO.foreachDiscard(users)(Console.printLine)
+      _ <- ZIO.foreachDiscard(users)(printUser)
     } yield ()
-  }
+
+  private def printUser(user: User): ZIO[Any, IOException, Unit] =
+    Console.printLine(user)
 
 }

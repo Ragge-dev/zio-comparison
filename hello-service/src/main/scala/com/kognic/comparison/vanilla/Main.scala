@@ -16,9 +16,9 @@ object Main extends App {
 
   private val result = for {
     users <- userService.getUsers(userIds)
-  } yield handleUsers(users)
+  } yield printUsers(users)
 
-  private def handleUsers(users: Seq[User]): Unit = users.foreach(println)
+  private def printUsers(users: Seq[User]): Unit = users.foreach(println)
 
   // Now when we can run the program, we need to wait for the result
   Await.result(result, 1.minute)
