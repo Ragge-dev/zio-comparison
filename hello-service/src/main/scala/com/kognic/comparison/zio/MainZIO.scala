@@ -10,7 +10,7 @@ import scala.reflect.io.Path
 
 object MainZIO extends ZIOAppDefault {
   private val basePath = ZLayer.succeed(Path("/."))
-  val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
+  private val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
   /*
   Program can only fail with our DomainError type

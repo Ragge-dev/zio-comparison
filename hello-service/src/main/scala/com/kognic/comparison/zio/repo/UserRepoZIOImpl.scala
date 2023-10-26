@@ -20,17 +20,22 @@ case class UserRepoZIOImpl(baseDir: Path) extends UserRepoZIO {
   */
   def getUser(userId: UserId): ZIO[Any, DomainError, User] =
     Console.printLine(s"Reading user $userId from file").orDie *>
-      ZIO.acquireReleaseWith(openSource(userId))(closeSource)(parseUser)
+      ZIO.acquireReleaseWith(openSource(userId))(closeSource)(parseUser(userId))
 
-  def parseUser(source: BufferedSource): ZIO[Any, JsonParseError, User] =
+  private def parseUser(userId: UserId)(source: BufferedSource): ZIO[Any, JsonParseError, User] =
     ZIO.attempt(source.getLines().mkString.parseJson.convertTo[User])
-      .mapError(e => JsonParseError("Failed to parse user", e))
+      .mapError(e => JsonParseError(s"Failed to parse user: $userId", e))
 
   private def openSource(userId: UserId): ZIO[Any, UserNotFoundError, BufferedSource] = {
     val path = baseDir / s"user_$userId.json"
-    ZIO.attempt(Source.fromInputStream(getClass.getResourceAsStream(path.toString())))
-      .mapError(e => UserNotFoundError(s"User with id $userId not found", e))
+    val fileStream = getClass.getResourceAsStream(path.toString())
+    if (fileStream == null) {
+      ZIO.fail(UserNotFoundError.fromException(new Exception("User not found")))
+    } else {
+      ZIO.succeed(Source.fromInputStream(fileStream))
+    }
   }
+
   private def closeSource(source: BufferedSource): ZIO[Any, Nothing, Unit] = ZIO.succeed(source.close())
 
 }

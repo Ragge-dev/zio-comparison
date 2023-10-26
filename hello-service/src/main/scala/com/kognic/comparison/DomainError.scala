@@ -1,11 +1,12 @@
 package com.kognic.comparison
 
-sealed abstract class DomainError(msg: String, error: Throwable) extends Throwable(msg, error) {
-
-}
+// T
+sealed abstract class DomainError(msg: String, error: Throwable) extends Throwable(msg, error)
 
 object DomainError {
   case class UserNotFoundError(msg: String, error: Throwable) extends DomainError(msg, error)
-  case class UserConfigNotFound(msg: String, error: Throwable) extends DomainError(msg, error)
+  object UserNotFoundError {
+    def fromException(error: Exception): UserNotFoundError = UserNotFoundError(error.getMessage, error)
+  }
   case class JsonParseError(msg: String, error: Throwable) extends DomainError(msg, error)
 }
