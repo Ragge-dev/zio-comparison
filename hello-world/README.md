@@ -54,6 +54,6 @@ help in more complex cases. The biggest difference otherwise is that when you pr
 using ZIO it returns a `ZIO` type, which can fail with `IOException` or succeed returning a `Unit`.
 
 ### Testing
-Also have a look in the test file where we are able to test what the program prints to the console, not
-at all trivial in regular Scala! We also show there that not matter how you call the ZIO code it will
+Also have a look in the test file where we are able to test what the program prints to the console. 
+We also show there that not matter how you call the ZIO code it will
 return the same result.
