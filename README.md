@@ -7,6 +7,13 @@ similar implementations where one is using ZIO and one is using vanilla Scala.
 If you are new to sbt I recommend just running all the examples from Intellij. Also you will have
 to install SBT, follow the instructions [here](https://docs.scala-lang.org/getting-started/sbt-track/getting-started-with-scala-and-sbt-on-the-command-line.html).
 
+You will need to have read something on what the 
+[ZIO](https://zio.dev/reference/core/zio/)
+type is, and what a 
+[ZLayer](https://zio.dev/reference/contextual/zlayer/)
+is. E.g. Go to the links and look at the examples. Then you can experiment with the code available
+in this repo.
+
 Start out in the `hello-world` package, or if you are feeling adventurous, go straight to the
 `hello-service` package. **NOTE** that each package has it's own README.md file with 
 some notes about each package.
