@@ -1,42 +1,39 @@
 package com.kognic.comparison.zio
 
-import com.kognic.comparison.DomainError.{IOError, NotFoundError}
+import com.kognic.comparison.DomainError.{JsonParseError, UserNotFoundError}
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.zio.filestorage.FileStorageZIOImpl
+import com.kognic.comparison.zio.repo.UserRepoZIOImpl
 import com.kognic.comparison.zio.service.{UserServiceZIO, UserServiceZIOImpl}
 import com.kognic.comparison.{DomainError, User}
-import zio.{Console, IO, ZIO, ZIOAppDefault, ZLayer}
+import zio.{Console, ZIO, ZIOAppDefault, ZLayer}
 
-import java.io.IOException
 import scala.reflect.io.Path
 
 object MainZIO extends ZIOAppDefault {
   private val basePath = ZLayer.succeed(Path("/."))
+  private val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
-  val userIds = Seq(7, 1, 2, 3, 4, 5, 6).map(id => UserId(id))
-
-  // Program has UserServiceZIO as dependency, which needs to be provided
-  override def run: ZIO[Any, IOException, Unit] = program
-    .catchAll(handleError)
+  /*
+  Program can only fail with our DomainError type
+   */
+  override def run: ZIO[Any, DomainError, Unit] = program
+    .catchAll {
+      case _: UserNotFoundError => Console.printLine("Special case for UserNotFound").orDie
+      case _: JsonParseError => Console.printLine("Special case for JsonParseError").orDie
+    }
     .provide(
       UserServiceZIOImpl.layer, // Has a FileStorageZIO as dependency, which needs to be provided
-      FileStorageZIOImpl.layer, // Has a Path as dependency, which needs to be provided
+      UserRepoZIOImpl.layer, // Has a Path as dependency, which needs to be provided
       basePath // Has no dependencies
     )
 
   private def program: ZIO[UserServiceZIO, DomainError, Unit] =
     for {
       users <- UserServiceZIO.getUsers(userIds)
-      _ <- ZIO.foreachDiscard(users)(a => printUser(a))
+      _ <- ZIO.foreachDiscard(users)(printUser)
     } yield ()
 
-  private def printUser(user: User): ZIO[Any, IOError, Unit] =
-    Console.printLine(user)
-      .mapError(e => IOError("Failed to print users to terminal", e))
+  private def printUser(user: User): ZIO[Any, Nothing, Unit] =
+    Console.printLine(user).orDie
 
-  // Could do something specific for each error (e.g. return specific http status code)
-  private def handleError(error: DomainError): ZIO[Any, IOException, Unit] = error match {
-    case NotFoundError(msg, _) => Console.printLine(msg)
-    case IOError(msg, _) => Console.printLine(msg)
-  }
 }

@@ -1,29 +1,35 @@
 package com.kognic.comparison.vanilla
 
-import com.kognic.comparison.DomainError.NotFoundError
+import com.kognic.comparison.DomainError.{JsonParseError, UserNotFoundError}
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.vanilla.service.UserServiceImpl
 import com.kognic.comparison.{DomainError, User}
-import com.kognic.core.application.ThreadPools.Implicits.mappingExecutionContext
+import com.kognic.core.application.DefaultService
+
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.DurationInt
 
 
-object Main extends App {
+object Main extends App with DefaultService {
   private val userService = UserServiceImpl()
 
-  val userIds = Seq(7, 1, 2, 3, 4, 5, 6).map(id => UserId(id))
+  val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
-  // Could do something specific for each error here (e.g. return specific http status code)
-  private def handleUsers(users: Either[DomainError, Seq[User]]): Unit = users match {
-    case Left(value: NotFoundError) =>
-      println(value.msg)
-    case Left(value) => println(value)
-    case Right(value) => value.foreach(println)
-  }
+  private val program = for {
+    result <- userService.getUsers(userIds)
+  } yield printResult(result)
 
-  private val result = for {
-    users <- userService.getUsers(userIds)
-  } yield handleUsers(users)
+  private def printResult(users: Either[DomainError, Seq[User]]): Unit =
+    users
+      .fold(handleError, users => users.foreach(println))
 
-  result.map(_ => System.exit(0))
+  private def handleError(error: DomainError): Unit =
+    error match {
+      case _: UserNotFoundError => println("Special case for UserNotFound")
+      case _: JsonParseError => println("Special case for JsonParseError")
+    }
 
+  // Now when we can run the program, we need to wait for the result
+  Await.result(program, 1.minute)
 }

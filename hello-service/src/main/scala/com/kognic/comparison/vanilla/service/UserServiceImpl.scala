@@ -1,43 +1,29 @@
 package com.kognic.comparison.vanilla.service
 
 import com.kognic.comparison.Ids.UserId
-import com.kognic.comparison.vanilla.filestorage.{FileStorage, FileStorageImpl}
 import com.kognic.comparison.{DomainError, User}
-import com.kognic.core.application.DefaultService
+import com.kognic.comparison.vanilla.repo.{UserRepo, UserRepoImpl}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserServiceImpl(fileStorage: FileStorage)(implicit ec: ExecutionContext) extends UserService with DefaultService {
-  // Expected errors are caught in the Either, unexpected errors causes the Future to fail
+class UserServiceImpl(fileStorage: UserRepo)(implicit ec: ExecutionContext) extends UserService {
   def getUsers(userIds: Seq[UserId]): Future[Either[DomainError, Seq[User]]] =
     for {
-      nestedUsers <- Future.sequence(userIds.map(fileStorage.getUser))
-      users = liftError(nestedUsers)
-      _ = logError(users)
-    } yield users
+      users <- Future.sequence(userIds.map(fileStorage.getUser))
+    } yield liftErrors(users)
 
-  /*
-   * We need to lift the errors from the Seq[Either[DomainError, User]] to Either[DomainError, Seq[User]] in order
-   * to uphold our interface in getUsers.
-   */
-  private def liftError(users: Seq[Either[DomainError, User]]): Either[DomainError, Seq[User]] =
-    users.foldLeft(Right(Seq()): Either[DomainError, Seq[User]]) {
+  private def liftErrors(users: Seq[Either[DomainError, User]]): Either[DomainError, Seq[User]] =
+    users.foldLeft(Right(Seq.empty[User]): Either[DomainError, Seq[User]]) {
       case (acc, Right(user)) => acc.map(_ :+ user)
-      case (_, Left(e)) => Left(e)
-    }
-
-  private def logError(users: Either[DomainError, Seq[User]]): Unit =
-    users match {
-      case Left(error) => logger.error("Failed to fetch users with error: ", error)
-      case Right(_) => ()
+      case (_, Left(error)) => Left(error)
     }
 }
 
 object UserServiceImpl {
 
-  import com.kognic.core.application.ThreadPools.Implicits.ioBoundExecutor
+  import scala.concurrent.ExecutionContext.Implicits.global
 
-  private lazy val instance = new UserServiceImpl(FileStorageImpl())
+  private lazy val instance = new UserServiceImpl(UserRepoImpl())
 
   def apply(): UserServiceImpl = instance
 }

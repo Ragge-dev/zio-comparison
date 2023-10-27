@@ -1,11 +1,11 @@
-package com.kognic.comparison.vanilla.filestorage
+package com.kognic.comparison.vanilla.repo
 
 import com.kognic.comparison.Ids.UserId
 import com.kognic.comparison.{DomainError, User}
 
 import scala.concurrent.Future
 
-trait FileStorage {
+trait UserRepo {
   def getUser(userId: UserId): Future[Either[DomainError, User]]
 }
 
