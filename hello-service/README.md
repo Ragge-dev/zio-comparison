@@ -12,4 +12,9 @@ The vanilla Scala code will look very odd without following the train of thought
 with in the `service-pattern` branch.
 
 In this Hello-Service we have a look at the Service Pattern in ZIO, and compare that
-to how we usually create services at Kognic.
+to how we usually create services in vanilla scala.
+
+## Other features we will look at next
+- Integration with Futures
+- Resource Management
+- Retries
