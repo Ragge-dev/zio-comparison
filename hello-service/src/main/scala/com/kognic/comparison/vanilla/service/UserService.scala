@@ -6,5 +6,5 @@ import com.kognic.comparison.{DomainError, User}
 import scala.concurrent.Future
 
 trait UserService {
-  def getUsers(userIds: Seq[UserId]): Future[Either[DomainError, Seq[User]]]
+  def getUsers(userIds: Seq[UserId]): Future[Seq[User]]
 }
