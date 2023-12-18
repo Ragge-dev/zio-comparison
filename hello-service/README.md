@@ -14,7 +14,7 @@ is simply to show how you can handle errors at the edge of your program.
 Instead of having all of the errors baked into the Future we instead keep unexpected errors
 in the Future and the expected errors in the Either. And this works! But it is not very
 ergonomic. Biggest problem is that we have to manually lift errors out of the Sequence in
-`UserServiceImpl`, and that Eithers are not exclusively modelled to have the Left as 
+`UserServiceImpl`, and that Eithers are not modelled to have the Left as 
 an error channel.
 
 This could be fixed by using some other effect system which more ergonomically can handle 
