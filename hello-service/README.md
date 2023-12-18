@@ -1,7 +1,7 @@
 # Services and business logic
 If you are new to sbt I recommend just running all the examples from Intellij.
 
-In order to start simple and look at parts at a time, checkout the branch `service-pattern` using:		￼
+In order to start simple and look at parts at a time, checkout the branch `service-pattern` using:
 ## Compare Service Pattern
 ```bash		￼
 git checkout service-pattern		
