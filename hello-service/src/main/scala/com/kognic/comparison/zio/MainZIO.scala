@@ -14,8 +14,7 @@ object MainZIO extends ZIOAppDefault {
   val userIds = Seq(1, 2, 3, 4, 5, 6).map(id => UserId(id))
 
   /*
-   Our program can now fail in several different ways, but we don't know how it can fail. So we catch
-   everything and print the errors.
+   Our program can now fail in several different ways, but we don't know how it can fail.
    */
   override def run: ZIO[Any, Throwable, Unit] = program
     .provide(
