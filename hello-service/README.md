@@ -11,15 +11,18 @@ with a json file you will not get a stacktrace. Instead you will get a simple pr
 is simply to show how you can handle errors at the edge of your program.
 
 ### Vanilla Scala
-Instead of having all of the errors baked into the Future we instead keep unexpected errors
+Instead of having all of the errors baked into the Future we try to keep unexpected errors
 in the Future and the expected errors in the Either. And this works! But it is not very
-ergonomic. Biggest problem is that we have to manually lift errors out of the Sequence in
-`UserServiceImpl`, and that Eithers are not modelled to have the Left as 
+ergonomic, and it's up to discipline that we don't have any expected errors in the Future. 
+Biggest problem is that it is not ergonomic to work with since we have to lift errors out
+of the Sequence in `UserServiceImpl`, since Eithers are not modelled to have the Left as 
 an error channel.
 
 This could be fixed by using some other effect system which more ergonomically can handle 
 errors than trying to do it with Futures and Eithers. Two examples I know of are Monix and
-ZIO. 
+ZIO. My (subjective) best way to work with errors for Futures is to keep the typed errors
+but not use the Either monad. In this case all errors is in the designed error channel for
+Futures and it is as ergonomic as you can get.
 
 ### ZIO
 Reminder:
