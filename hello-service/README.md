@@ -1,5 +1,6 @@
 # Services and business logic
-If you are new to sbt I recommend just running all the examples from Intellij.
+Because of that I have taken shortcuts with resolving the user.json files you have to run the 
+projects from the IDE in order for the programs to correctly resolve the path to the files.
 
 In order to start simple and look at parts at a time, checkout the branch `service-pattern` using:
 ## Compare Service Pattern
