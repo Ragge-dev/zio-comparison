@@ -20,7 +20,16 @@ ThisBuild / scalacOptions ++= Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(helloService)
+  .aggregate(helloWorld, helloService)
+
+lazy val helloWorld = project
+  .in(file("hello-world"))
+  .settings(
+    name := "hello-world",
+    version := "0.1.0-SNAPSHOT",
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
+    libraryDependencies ++= dependencies
+  )
 
 lazy val helloService = project
   .in(file("hello-service"))
